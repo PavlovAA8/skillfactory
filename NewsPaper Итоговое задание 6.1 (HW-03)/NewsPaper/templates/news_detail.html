@@ -1,0 +1,12 @@
+{% extends 'flatpages/default.html' %} 
+{% load custom_filters %}
+
+{% block content %}
+<h1>{{ news.title|censor_words }}</h1>
+<p><small>Автор: {{ news.author.user.username }}, дата: {{ news.data_time_created|date:"d.m.Y H:i" }}</small></p>
+<div>
+    {{ news.text|censor_words|linebreaks }}
+</div>
+<p>Рейтинг: {{ news.rating }}</p>
+<a href="{% url 'news_list' %}">← Вернуться к списку новостей</a>
+{% endblock %}
