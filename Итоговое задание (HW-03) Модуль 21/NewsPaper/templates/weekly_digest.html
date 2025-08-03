@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Еженедельный дайджест</title>
+</head>
+<body>
+    <h2>Здравствуйте, {{ username }}!</h2>
+    <p>Вот новые посты в категории <b>{{ category }}</b> за последнюю неделю:</p>
+    <ol>
+        {% for post in post_links %}
+            <li>
+                {{ post.category }} - <a href="{{ post.url }}">{{ post.title }}</a>
+            </li>
+        {% endfor %}
+    </ol>
+</body>
+</html>
