@@ -1,0 +1,74 @@
+1.	Создать двух пользователей (с помощью метода User.objects.create_user('username')).
+user1 = User.objects.create_user('user1', password='123')
+user2 = User.objects.create_user('user2', password='321')
+
+2.	Создать два объекта модели Author, связанные с пользователями.
+author1 = Author.objects.create(user=user1)
+author2 = Author.objects.create(user=user2)
+
+3.	Добавить 4 категории в модель Category.
+cat1 = Category.objects.create(name='Спорт')
+cat2 = Category.objects.create(name='Кулинария')
+cat3 = Category.objects.create(name='Образование')
+cat4 = Category.objects.create(name='В мире животных')
+
+4.	Добавить 2 статьи и 1 новость.
+post1 = Post.objects.create(author=author1, post_type='AR', title='Вячеслав Войнов прокомментировал недопуск России на Олимпиаду-2026', text='Защитник «Авангарда» Вячеслав Войнов прокомментировал недопуск России на Олимпиаду-2026. Международная федерация хоккея (IIHF) приняла решение не допустить сборную России к участию в зимней Олимпиаде 2026 года в Милане. Зимняя Олимпиада-2026 пройдет с 6 по 22 февраля в двух итальянских городах – Милане и Кортина д’Ампеццо." Вместо российской команды на турнире будет выступать сборная')
+
+post2 = Post.objects.create(author=author2, post_type='AR', title='Заготовки для завтраков на месяц вперед за 2 часа', text='Ставлю вариться бульон из костей и замешиваю запеканку, чтобы занять духовку.Запеканка может быть не только сладкой, делаю со специями, легким сыром и протеином без сахара. 34 г белка на 100 г! Рецепт можно забрать в подборке, вместе со списком продуктов, меню на 2 недели и идеями заготовок стоимостью до 150 руб. за порцию. В доставках запеканка стоит в 7 раз дороже, а значит только на одной партии можно сэкономить больше 4 600 руб. Если завтракать вдвоем такой каждый выходные, то за год уже набегает больше 60 000 руб.! А вы еще спрашиваете, как системный подход помогает экономить?')
+
+post3 = Post.objects.create(author=author1, post_type='NW', title='В каком возрасте лучше брать котёнка: рекомендации для будущих владельцев', text='Согласно рекомендациям ветеринаров и зоопсихологов, минимальный возраст, когда можно забрать котёнка в новый дом, — 8 недель. Однако оптимальным считается возраст 12–14 недель. В этот период котёнок не только окреп физически, но и успел пройти важные этапы социализации. Материнское молоко — это не просто источник питания. Оно содержит антитела, которые обеспечивают временный иммунитет к инфекциям. Однако важно понимать, что этот иммунитет ослабевает к 6–8 неделям, поэтому котёнок становится уязвимым перед вирусами. Вакцинация, которая начинается в 8 недель, требует ревакцинации через 3–4 недели для полноценной защиты.')
+
+5.	Присвоить им категории (как минимум в одной статье/новости должно быть не меньше 2 категорий).
+PostCategory.objects.create(post=post1, category=cat1)
+PostCategory.objects.create(post=post2, category=cat2)
+PostCategory.objects.create(post=post3, category=cat3)
+PostCategory.objects.create(post=post3, category=cat4)
+
+6.	Создать как минимум 4 комментария к разным объектам модели Post (в каждом объекте должен быть как минимум один комментарий).
+comment1 = Comment.objects.create(post=post1, user=user2, text='Отличная статья про спорт!')
+comment2 = Comment.objects.create(post=post2, user=user1, text='Звучит вкусно!')
+comment3 = Comment.objects.create(post=post3, user=user2, text='Полезная новость о котятах.')
+comment4 = Comment.objects.create(post=post3, user=user1, text='Спасибо за информацию!')
+comment5 = Comment.objects.create(post=post1, user=user2, text='Обидно за сборную =()')
+
+7.	Применяя функции like() и dislike() к статьям/новостям и комментариям, скорректировать рейтинги этих объектов.
+post1.like()
+post1.like()
+post1.dislike()
+post1.dislike()
+post1.dislike()
+post2.like()
+post2.like()
+post2.dislike()
+post3.like()
+post3.like()
+post3.like()
+post3.like()
+
+
+comment1.like()
+comment1.like()
+comment1.dislike()
+comment1.like()
+comment2.dislike()
+comment2.dislike()
+comment3.like()
+comment4.like()
+comment4.like()
+comment4.dislike()
+comment4.dislike()
+
+8.	Обновить рейтинги пользователей.
+author1.update_rating()
+author2.update_rating()
+
+9.	Вывести username и рейтинг лучшего пользователя (применяя сортировку и возвращая поля первого объекта).
+Author.objects.order_by('-rating').first()
+
+10. Вывести дату добавления, username автора, рейтинг, заголовок и превью лучшей статьи, основываясь на лайках/дислайках к этой статье.
+best_post = Post.objects.order_by('-rating').first()
+best_post
+
+11.	Вывести все комментарии (дата, пользователь, рейтинг, текст) к этой статье.
+Comment.objects.filter(post=best_post)
