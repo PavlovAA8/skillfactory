@@ -1,0 +1,46 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Создать отложенное сообщение</h1>
+<form method="POST">
+  {% csrf_token %}
+  <p><strong>Заголовок</strong></p>
+  <input type="text" id="title" name="title" required style="width:100%; max-width:600px; box-sizing:border-box;"><br>
+  <p><strong>Сообщение</strong></p>
+  <textarea id="content" name="content" required rows="8"
+    style="width:100%; max-width:600px; min-height:120px; resize:vertical;"></textarea><br>
+  <p><strong>Время отправки</strong></p>
+  <input type="datetime-local" id="scheduled_time" name="scheduled_time" required><br><br>
+
+  <button type="submit" class="btn btn-primary">Создать сообщение</button><br><br>
+</form>
+
+
+<h3>Список всех записей</h3>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th>Создано</th>
+      <th>Заголовок</th>
+      <th>Сообщение</th>
+      <th>Запланировано на</th>
+      <th>Автор</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for obj in page_obj %}
+    <tr>
+      <td>{{ obj.created_at|date:"d.m.Y H:i" }}</td>
+      <td>{{ obj.title }}</td>
+      <td>{{ obj.content }}</td>
+      <td>{{ obj.scheduled_time|date:"d.m.Y H:i" }}</td>
+      <td>{{ obj.author.get_username }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="5">Записей нет</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,3 @@
+mail = ''
+psw = ''
+login = ''

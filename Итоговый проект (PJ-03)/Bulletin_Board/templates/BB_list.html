@@ -1,0 +1,48 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h1>Список объявлений</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Дата публикации</th>
+            <th>Категория</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for announcement in page_obj %}
+        <tr>
+            <td>
+                <a href="{% url 'announcement_detail' announcement.id %}">{{ announcement.title }}</a>
+            </td>
+            <td>{{ announcement.created_at|date:"d.m.Y" }}</td>
+            <td>{{ announcement.category.name }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">Объявлений пока нет.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% if page_obj.has_previous %}
+<a href="?page=1">1</a>
+{% if page_obj.previous_page_number != 1 %}
+...
+<a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+{% endif %}
+{% endif %}
+
+{{ page_obj.number }}
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+{% if paginator.num_pages != page_obj.next_page_number %}
+...
+<a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+{% endif %}
+{% endif %}
+{% endblock content %}

@@ -1,0 +1,112 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>{% if form.instance.pk %}Редактирование объявления{% else %}Создание объявления{% endif %}</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <label for="id_image">Изображения</label>
+        <input type="file" name="image" id="id_image" multiple>
+        <br /><br />
+        <button type="submit" class="button">Сохранить</button>
+    </form>
+
+    {% if form.instance.pk %}
+        <div class="static-info">
+            <p><strong>Автор:</strong> {{ form.instance.author.username }}</p>
+            <p><strong>Дата создания:</strong> {{ form.instance.created_at|date:"d.m.Y H:i" }}</p>
+        </div>
+
+        {% if form.instance.images.all %}
+            <div class="image-gallery">
+                {% for img in form.instance.images.all %}
+                    <div style="position: relative; display: inline-block; margin: 5px;">
+                        <img src="{{ img.image.url }}" alt="Файл не поддерживается" style="max-width: 200px; border-radius: 5px;">
+                        <a href="{% url 'delete_announcement_image' img.id %}"
+                           style="position: absolute; top: 5px; right: 5px; color: red; font-weight: bold; text-decoration: none;"
+                           onclick="return confirm('Удалить это изображение?');">×</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+    <div class="buttons" style="margin-top: 20px;">
+        <form method="GET" action="{% url 'announcement_delete' form.instance.pk %}"
+            style="display: inline-block; margin-right: 10px;">
+            <button type="submit" class="button_del">Удалить объявление</button>
+        </form>
+        <a href="{% url 'announcement_list' %}" class="button"
+            style="display: inline-block; vertical-align: middle;">Назад к списку объявлений</a>
+    </div>
+    {% else %}
+    <div style="margin-top: 20px;">
+        <a href="{% url 'announcement_list' %}" class="button">Назад к списку объявлений</a>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .container {
+        margin-top: 20px;
+    }
+
+    .announcement-info,
+    .comments-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .buttons {
+        margin-top: 20px;
+    }
+
+    .button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .button_del {
+        background-color: red;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .button:hover {
+        opacity: 0.9;
+    }
+
+    .comment {
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+    }
+
+    .link {
+    position: absolute; 
+    top: 5px; 
+    right: 5px; 
+    color: red; 
+    font-weight: bold; 
+    text-decoration: none;
+    }
+</style>
+
+{% endblock %}

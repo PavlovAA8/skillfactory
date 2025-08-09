@@ -1,0 +1,87 @@
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+<h2>Комментарии к объявлениям "{{ user }}"</h2>
+
+
+<form method="GET">
+    {{ filter.form.as_p }}
+    <button type="submit" class="btn btn-primary">Фильтровать</button>
+</form>
+<form method="POST">
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input type="checkbox" id="select-all">
+                    <label for="select-all">Выбрать все</label>
+                </th>
+                <th>№</th>
+                <th>Объявление</th>
+                <th>Комментарий</th>
+                <th>Дата комментария</th>
+                <th>Автор комментария</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for comment in comments %}
+            <tr>
+                <td><input type="checkbox" name="selected_comments" value="{{ comment.id }}"></td>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                    <a href="{% url 'announcement_detail' comment.announcement.id %}">{{ comment.announcement.title}}</a>
+                </td>
+                <td>{{ comment.content }}</td>
+                <td>{{ comment.created_at|date:"d.m.Y H:i" }}</td>
+                <td>{{ comment.user.username }}</td>
+                <td>{% if comment.accepted %}Принят
+                    {% else %}
+                    {% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center;">Комментариев пока нет.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% csrf_token %}
+    <button type="submit" name="action" value="accept" class="btn btn-primary">Принять</button>
+    <button type="submit" name="action" value="delete" class="btn btn-danger">Удалить</button>
+</form>
+
+<script>
+    document.getElementById('select-all').onclick = function () {
+        var checkboxes = document.querySelectorAll('input[name="selected_comments"]');
+        for (var checkbox of checkboxes) {
+            checkbox.checked = this.checked;
+        }
+    };
+</script>
+
+
+<style>
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .table tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+{% endblock %}
